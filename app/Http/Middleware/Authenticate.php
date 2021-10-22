@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
+use function PHPUnit\Framework\returnArgument;
+
 class Authenticate extends Middleware
 {
     /**
