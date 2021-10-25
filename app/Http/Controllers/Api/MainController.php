@@ -63,6 +63,85 @@ class MainController extends Controller
         );
     }
 
+    public function update(Request $request)
+    {
+        $id = $request->query('id');
+        if (!$id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'id todo is required',
+                'data' => null
+            ], 400);
+        }
+
+        $todo = Todo::find($id);
+        if (!$todo) {
+            return response()->json([
+                'status' => false,
+                'message' => 'item is not found',
+                'data' => null
+            ], 404);
+        }
+
+        if ($request->query('name')) {
+            $todo->name = $request->query('name');
+        }
+
+        if ($request->query('day')) {
+            $todo->day = $request->query('day');
+        }
+
+        if ($request->query('url')) {
+            $todo->url = $request->query('url');
+        }
+
+        $todo->save();
+
+        return response()->json(
+            [
+                'status' => true,
+                'message' => 'success updated data',
+                'data' => $todo
+            ],
+            200
+        );
+    }
+
+    public function drop(Request $request)
+    {
+        $id = $request->query('id');
+        if (!$id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'id todo is required',
+                'data' => null
+            ], 400);
+        }
+
+        $todo = Todo::find($id);
+        if (!$todo) {
+            return response()->json([
+                'status' => false,
+                'message' => 'item is not found',
+                'data' => null
+            ], 404);
+        }
+
+        if ($todo->user->id != Auth::user()->id) {
+            return response()->json([
+                'status' => false,
+                'message' => 'this item is not yours',
+                'data' => null
+            ], 400);
+        }
+
+        $todo->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Success delete item',
+            'data' => null
+        ], 200);
+    }
     public function check(Request $request)
     {
         return response()->json([
