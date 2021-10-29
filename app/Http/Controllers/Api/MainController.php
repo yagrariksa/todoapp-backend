@@ -15,14 +15,26 @@ class MainController extends Controller
 {
     public function get(Request $request)
     {
-        return response()->json(
-            [
-                'status' => true,
-                'message' => null,
-                'data' => Auth::user()->todo
-            ],
-            200
-        );
+        $data  = Auth::user()->todo;
+        if (sizeof($data) > 0) {
+            return response()->json(
+                [
+                    'status' => true,
+                    'message' => "berhasil mendapatkan " . sizeof($data) . " data",
+                    'data' => $data
+                ],
+                200
+            );
+        }else{
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => "belum memiliki item",
+                    'data' => null
+                ],
+                200
+            );
+        }
     }
 
     public function store(Request $request)
@@ -36,7 +48,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'name, url, day are required',
                 'data' => null
-            ], 400);
+            ], 200);
         }
 
         if ($request->day > 6 || $request->day < 0) {
@@ -44,7 +56,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'day must be in 0 until 6',
                 'data' => null
-            ], 400);
+            ], 200);
         }
 
         $todo = Todo::create([
@@ -71,7 +83,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'id todo is required',
                 'data' => null
-            ], 400);
+            ], 200);
         }
 
         $todo = Todo::find($id);
@@ -80,7 +92,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'item is not found',
                 'data' => null
-            ], 404);
+            ], 200);
         }
 
         if ($request->query('name')) {
@@ -115,7 +127,8 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'id todo is required',
                 'data' => null
-            ], 400);
+            ], 200
+        );
         }
 
         $todo = Todo::find($id);
@@ -124,7 +137,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'item is not found',
                 'data' => null
-            ], 404);
+            ], 200);
         }
 
         if ($todo->user->id != Auth::user()->id) {
@@ -132,7 +145,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'this item is not yours',
                 'data' => null
-            ], 400);
+            ], 200);
         }
 
         $todo->delete();
@@ -158,7 +171,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'email or password is required',
                 'data' => null
-            ], 400);
+            ], 200);
         }
 
         $user = User::where('email', $request->email)->first();
@@ -167,7 +180,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'user not found',
                 'data' => null
-            ], 400);
+            ], 200);
         }
 
         if (Hash::check($request->password, $user->password)) {
@@ -177,13 +190,13 @@ class MainController extends Controller
                 'status' => true,
                 'message' => 'login successfull',
                 'data' => $user
-            ], 400);
+            ], 200);
         } else {
             return response()->json([
                 'status' => false,
                 'message' => 'Authenticating fail',
                 'data' => null
-            ], 400);
+            ], 200);
         }
     }
 
@@ -198,7 +211,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'name, email, password are required',
                 'data' => null
-            ], 400);
+            ], 200);
         }
 
         $u = User::where('email', $request->email)->first();
@@ -207,7 +220,7 @@ class MainController extends Controller
                 'status' => false,
                 'message' => 'email already used',
                 'data' => null
-            ], 400);
+            ], 200);
         }
 
         $user = User::create([
@@ -221,6 +234,6 @@ class MainController extends Controller
             'status' => true,
             'message' => 'login successfull',
             'data' => $user
-        ], 400);
+        ], 200);
     }
 }

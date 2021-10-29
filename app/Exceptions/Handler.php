@@ -47,7 +47,7 @@ class Handler extends ExceptionHandler
                 'status' => false,
                 'message' => 'you are unauthenticate',
                 'data' => []
-            ],401);
+            ], 200);
         }
 
         return route('login');
