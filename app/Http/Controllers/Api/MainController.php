@@ -15,7 +15,13 @@ class MainController extends Controller
 {
     public function get(Request $request)
     {
-        $data  = Auth::user()->todo;
+        if ($request->query('day') || $request->query('day') === "0") {
+            $data = Todo::where('uid', Auth::user()->id)
+                ->where('day', $request->query('day'))
+                ->get();
+        } else {
+            $data  = Auth::user()->todo;
+        }
         if (sizeof($data) > 0) {
             return response()->json(
                 [
@@ -25,7 +31,7 @@ class MainController extends Controller
                 ],
                 200
             );
-        }else{
+        } else {
             return response()->json(
                 [
                     'status' => false,
@@ -123,12 +129,14 @@ class MainController extends Controller
     {
         $id = $request->query('id');
         if (!$id) {
-            return response()->json([
-                'status' => false,
-                'message' => 'id todo is required',
-                'data' => null
-            ], 200
-        );
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => 'id todo is required',
+                    'data' => null
+                ],
+                200
+            );
         }
 
         $todo = Todo::find($id);
