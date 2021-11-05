@@ -115,6 +115,8 @@ class MainController extends Controller
             'name' => $request->name,
             'url' => $request->url,
             'day' => $request->day,
+            'hour' => $request->hour,
+            'minute' => $request->minute,
             'uid' => Auth::user()->id
         ]);
         return response()->json(
@@ -157,6 +159,14 @@ class MainController extends Controller
 
         if ($request->query('url')) {
             $todo->url = $request->query('url');
+        }
+
+        if ($request->query('hour')) {
+            $todo->hour = $request->query('hour');
+        }
+
+        if ($request->query('minute')) {
+            $todo->minute = $request->query('minute');
         }
 
         $todo->save();

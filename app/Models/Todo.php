@@ -14,6 +14,8 @@ class Todo extends Model
         'name',
         'url',
         'day',
+        'hour',
+        'minute',
     ];
 
     public function user()
