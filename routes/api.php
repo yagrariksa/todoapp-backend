@@ -22,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::middleware('auth:api')->group(function () {
     Route::prefix('todo')->group(function () {
         Route::get('/', [MainController::class, 'get']);
+        Route::get('/one', [MainController::class, 'getOne']);
         Route::post('/', [MainController::class, 'store']);
         Route::put('/', [MainController::class, 'update']);
         Route::delete('/', [MainController::class, 'drop']);

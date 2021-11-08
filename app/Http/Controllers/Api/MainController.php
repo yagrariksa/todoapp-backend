@@ -43,6 +43,52 @@ class MainController extends Controller
         }
     }
 
+    public function getOne(Request $request)
+    {
+        $id = $request->query('id');
+        if (!$id) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => "id wajib",
+                    'data' => null
+                ],
+                200
+            );
+        }
+
+        $todo = Todo::find($id);
+        if (!$todo) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => "item not found",
+                    'data' => null
+                ],
+                200
+            );
+        }
+
+        if ($todo->uid != Auth::user()->id) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'message' => "this item not yours",
+                    'data' => null
+                ],
+                200
+            );
+        }
+        return response()->json(
+            [
+                'status' => true,
+                'message' => "success get data",
+                'data' => $todo
+            ],
+            200
+        );
+    }
+
     public function store(Request $request)
     {
         if (
@@ -69,6 +115,8 @@ class MainController extends Controller
             'name' => $request->name,
             'url' => $request->url,
             'day' => $request->day,
+            'hour' => $request->hour,
+            'minute' => $request->minute,
             'uid' => Auth::user()->id
         ]);
         return response()->json(
@@ -111,6 +159,14 @@ class MainController extends Controller
 
         if ($request->query('url')) {
             $todo->url = $request->query('url');
+        }
+
+        if ($request->query('hour')) {
+            $todo->hour = $request->query('hour');
+        }
+
+        if ($request->query('minute')) {
+            $todo->minute = $request->query('minute');
         }
 
         $todo->save();
