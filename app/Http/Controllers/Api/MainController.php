@@ -18,6 +18,8 @@ class MainController extends Controller
         if ($request->query('day') || $request->query('day') === "0") {
             $data = Todo::where('uid', Auth::user()->id)
                 ->where('day', $request->query('day'))
+                ->orderBy('hour', 'asc')
+                ->orderBy('minute', 'asc')
                 ->get();
         } else {
             $data  = Auth::user()->todo;
